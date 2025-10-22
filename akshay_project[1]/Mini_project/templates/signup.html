@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Sign Up{% endblock %}
+{% block content %}
+<div class="card" style="max-width:500px;margin:0 auto;">
+    <h2 style="text-align:center;margin-bottom:1rem;">🧑‍💻 Create an Account</h2>
+
+    <form method="POST">
+        <div style="margin-bottom:1rem;">
+            <input type="text" name="username" placeholder="Username" required
+                   style="width:100%;padding:1rem;border-radius:15px;border:2px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.4);color:white;">
+        </div>
+        <div style="margin-bottom:1rem;">
+            <input type="email" name="email" placeholder="Email" required
+                   style="width:100%;padding:1rem;border-radius:15px;border:2px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.4);color:white;">
+        </div>
+        <div style="margin-bottom:1.5rem;">
+            <input type="password" name="password" placeholder="Password" required
+                   style="width:100%;padding:1rem;border-radius:15px;border:2px solid rgba(255,255,255,0.2);background:rgba(0,0,0,0.4);color:white;">
+        </div>
+        <button type="submit" style="width:100%;padding:1rem;border:none;border-radius:20px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;font-weight:bold;cursor:pointer;">
+            Sign Up
+        </button>
+    </form>
+
+    <p style="text-align:center;margin-top:1.2rem;color:rgba(255,255,255,0.7);">
+        Already have an account? <a href="/" style="color:#667eea;">Go Home</a>
+    </p>
+</div>
+{% endblock %}

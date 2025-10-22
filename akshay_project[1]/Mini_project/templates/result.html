@@ -1,0 +1,399 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .result-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .summary-section {
+        background: rgba(102, 126, 234, 0.15);
+        border: 2px solid rgba(102, 126, 234, 0.4);
+        padding: 2.5rem;
+        border-radius: 25px;
+        margin-bottom: 2rem;
+        animation: slideIn 0.5s ease;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .summary-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+    }
+    
+    .summary-header h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 0;
+    }
+    
+    .summary-content {
+        line-height: 1.9;
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.15rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-bottom: 2rem;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .action-btn {
+        padding: 0.8rem 1.5rem;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 15px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .action-btn:hover {
+        background: rgba(102, 126, 234, 0.3);
+        border-color: rgba(102, 126, 234, 0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .original-section {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 25px;
+        padding: 0;
+        margin-bottom: 2rem;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    .original-section details {
+        width: 100%;
+    }
+    
+    .original-section summary {
+        padding: 1.5rem 2rem;
+        cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.9);
+        background: rgba(0, 0, 0, 0.3);
+        transition: all 0.3s;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .original-section summary:hover {
+        background: rgba(102, 126, 234, 0.15);
+        color: #667eea;
+    }
+    
+    .original-section summary::marker {
+        color: #667eea;
+    }
+    
+    .original-content {
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.8;
+        font-size: 1rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    .original-content::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .original-content::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+    }
+    
+    .original-content::-webkit-scrollbar-thumb {
+        background: rgba(102, 126, 234, 0.5);
+        border-radius: 10px;
+    }
+    
+    .original-content::-webkit-scrollbar-thumb:hover {
+        background: rgba(102, 126, 234, 0.7);
+    }
+    
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+        box-shadow: 0 5px 25px rgba(102, 126, 234, 0.4);
+    }
+    
+    .back-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 35px rgba(102, 126, 234, 0.6);
+    }
+    
+    .stats-mini {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .stat-mini {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .stat-mini-label {
+        font-size: 0.85rem;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 0.25rem;
+    }
+    
+    .stat-mini-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+    
+    .toast {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: rgba(102, 126, 234, 0.95);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        z-index: 10000;
+        display: none;
+        animation: toastIn 0.3s ease;
+    }
+    
+    .toast.show {
+        display: block;
+    }
+    
+    @keyframes toastIn {
+        from {
+            opacity: 0;
+            transform: translateX(100px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .summary-section {
+            padding: 1.5rem;
+        }
+        
+        .summary-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .summary-content {
+            font-size: 1rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .action-btn {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .stats-mini {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .original-content {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="result-container">
+    <!-- Summary Section -->
+    <div class="summary-section">
+        <div class="summary-header">
+            <span style="font-size: 2rem;">📝</span>
+            <h2>Your Summary</h2>
+        </div>
+        
+        <ul class="summary-content" id="summaryContent">
+  <li>{{ summary }}</li>
+</ul>
+
+        
+        <div class="action-buttons">
+            <button class="action-btn" onclick="copySummary()">
+                📋 Copy Summary
+            </button>
+            <button class="action-btn" onclick="downloadSummary()">
+                💾 Download
+            </button>
+            <button class="action-btn" onclick="shareSummary()">
+                🔗 Share
+            </button>
+        </div>
+        
+        <div class="stats-mini">
+            <div class="stat-mini">
+                <span class="stat-mini-label">Original Length</span>
+                <span class="stat-mini-value" id="originalLength">{{ article|length }} chars</span>
+            </div>
+            <div class="stat-mini">
+                <span class="stat-mini-label">Summary Length</span>
+                <span class="stat-mini-value" id="summaryLength">{{ summary|length }} chars</span>
+            </div>
+            <div class="stat-mini">
+                <span class="stat-mini-label">Reduction</span>
+                <span class="stat-mini-value" id="reduction">
+                    {% set reduction = ((article|length - summary|length) / article|length * 100)|round|int %}
+                    {{ reduction }}%
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Original Article Section -->
+    <div class="original-section">
+        <details>
+            <summary>📄 View Original Text</summary>
+            <div class="original-content">{{ article }}</div>
+        </details>
+    </div>
+    
+    <!-- Back Button -->
+    <div style="text-align: center;">
+        <a href="{{ url_for('home') }}" class="back-link">
+            ⏪ Summarize Another Article
+        </a>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // Copy summary to clipboard
+    function copySummary() {
+        const summary = document.getElementById('summaryContent').textContent;
+        navigator.clipboard.writeText(summary).then(() => {
+            showToast('✅ Summary copied to clipboard!');
+        }).catch(() => {
+            showToast('❌ Unable to copy. Please select and copy manually.');
+        });
+    }
+    
+    // Download summary as text file
+    function downloadSummary() {
+        const summary = document.getElementById('summaryContent').textContent;
+        const blob = new Blob([summary], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'summary_' + Date.now() + '.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        showToast('💾 Summary downloaded!');
+    }
+    
+    // Share summary using Web Share API
+    function shareSummary() {
+        const summary = document.getElementById('summaryContent').textContent;
+        if (navigator.share) {
+            navigator.share({
+                title: 'Article Summary',
+                text: summary
+            }).then(() => {
+                showToast('🔗 Shared successfully!');
+            }).catch(() => {
+                showToast('❌ Sharing cancelled');
+            });
+        } else {
+            // Fallback: copy to clipboard
+            navigator.clipboard.writeText(summary).then(() => {
+                showToast('📋 Copied to clipboard (sharing not supported)');
+            }).catch(() => {
+                showToast('❌ Sharing not supported on this device');
+            });
+        }
+    }
+    
+    // Show toast notification
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+    
+    // Format numbers with commas
+    document.addEventListener('DOMContentLoaded', function() {
+        const originalLength = document.getElementById('originalLength');
+        const summaryLength = document.getElementById('summaryLength');
+        
+        if (originalLength) {
+            const chars = parseInt(originalLength.textContent);
+            originalLength.textContent = chars.toLocaleString() + ' chars';
+        }
+        
+        if (summaryLength) {
+            const chars = parseInt(summaryLength.textContent);
+            summaryLength.textContent = chars.toLocaleString() + ' chars';
+        }
+    });
+</script>
+
+{% endblock %}
